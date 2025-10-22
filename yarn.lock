@@ -4585,12 +4585,12 @@
     "@playwright/experimental-ct-core" "1.56.1"
     "@vitejs/plugin-react" "^4.2.1"
 
-"@playwright/test@1.41.1":
-  version "1.41.1"
-  resolved "https://registry.yarnpkg.com/@playwright/test/-/test-1.41.1.tgz#6954139ed4a67999f1b17460aa3d184f4b334f18"
-  integrity sha512-9g8EWTjiQ9yFBXc6HjCWe41msLpxEX0KhmfmPl9RPLJdfzL4F0lg2BdJ91O9azFdl11y1pmpwdjBiSxvqc+btw==
+"@playwright/test@1.55.1":
+  version "1.55.1"
+  resolved "https://registry.yarnpkg.com/@playwright/test/-/test-1.55.1.tgz#80f775d5f948cd3ef550fcc45ef99986d3ffb36c"
+  integrity sha512-IVAh/nOJaw6W9g+RJVlIQJ6gSiER+ae6mKQ5CX1bERzQgbC1VSeBlwdvczT7pxb0GWiyrxH4TGKbMfDb4Sq/ig==
   dependencies:
-    playwright "1.41.1"
+    playwright "1.55.1"
 
 "@polka/url@^1.0.0-next.24":
   version "1.0.0-next.25"
@@ -13940,22 +13940,22 @@ pkg-dir@^4.2.0:
   dependencies:
     find-up "^4.0.0"
 
-playwright-core@1.41.1:
-  version "1.41.1"
-  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.41.1.tgz#9c152670010d9d6f970f34b68e3e935d3c487431"
-  integrity sha512-/KPO5DzXSMlxSX77wy+HihKGOunh3hqndhqeo/nMxfigiKzogn8kfL0ZBDu0L1RKgan5XHCPmn6zXd2NUJgjhg==
+playwright-core@1.55.1:
+  version "1.55.1"
+  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.55.1.tgz#5d3bb1846bc4289d364ea1a9dcb33f14545802e9"
+  integrity sha512-Z6Mh9mkwX+zxSlHqdr5AOcJnfp+xUWLCt9uKV18fhzA8eyxUd8NUWzAjxUh55RZKSYwDGX0cfaySdhZJGMoJ+w==
 
 playwright-core@1.56.1:
   version "1.56.1"
   resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.56.1.tgz#24a66481e5cd33a045632230aa2c4f0cb6b1db3d"
   integrity sha512-hutraynyn31F+Bifme+Ps9Vq59hKuUCz7H1kDOcBs+2oGguKkWTU50bBWrtz34OUWmIwpBTWDxaRPXrIXkgvmQ==
 
-playwright@1.41.1:
-  version "1.41.1"
-  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.41.1.tgz#83325f34165840d019355c2a78a50f21ed9b9c85"
-  integrity sha512-gdZAWG97oUnbBdRL3GuBvX3nDDmUOuqzV/D24dytqlKt+eI5KbwusluZRGljx1YoJKZ2NRPaeWiFTeGZO7SosQ==
+playwright@1.55.1:
+  version "1.55.1"
+  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.55.1.tgz#8a9954e9e61ed1ab479212af9be336888f8b3f0e"
+  integrity sha512-cJW4Xd/G3v5ovXtJJ52MAOclqeac9S/aGGgRzLabuF8TnIb6xHvMzKIa6JmrRzUkeXJgfL1MhukP0NK6l39h3A==
   dependencies:
-    playwright-core "1.41.1"
+    playwright-core "1.55.1"
   optionalDependencies:
     fsevents "2.3.2"
 
