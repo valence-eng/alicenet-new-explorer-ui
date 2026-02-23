@@ -4,21 +4,26 @@ import React from 'react';
 
 import type { BannerProps } from './types';
 
-import isBrowser from 'lib/isBrowser';
+import useIsMobile from 'lib/hooks/useIsMobile';
+import { isBrowser } from 'toolkit/utils/isBrowser';
 
-const CoinzillaBanner = ({ className, platform }: BannerProps) => {
+import {
+  DESKTOP_BANNER_WIDTH,
+  MOBILE_BANNER_WIDTH,
+  DESKTOP_BANNER_HEIGHT,
+  MOBILE_BANNER_HEIGHT,
+} from './consts';
+
+const CoinzillaBanner = ({ className, format = 'responsive' }: BannerProps) => {
   const isInBrowser = isBrowser();
+  const isMobileViewport = useIsMobile();
+  const isMobile = format === 'mobile' || (format === 'responsive' && isMobileViewport);
 
   const { width, height } = (() => {
-    switch (platform) {
-      case 'desktop':
-        return { width: 728, height: 90 };
-      case 'mobile':
-        return { width: 320, height: 100 };
-      default:
-        return { width: undefined, height: undefined };
+    if (isMobile) {
+      return { width: MOBILE_BANNER_WIDTH, height: MOBILE_BANNER_HEIGHT };
     }
-
+    return { width: DESKTOP_BANNER_WIDTH, height: DESKTOP_BANNER_HEIGHT };
   })();
 
   React.useEffect(() => {
@@ -26,18 +31,18 @@ const CoinzillaBanner = ({ className, platform }: BannerProps) => {
       window.coinzilla_display = window.coinzilla_display || [];
       const cDisplayPreferences = {
         zone: '26660bf627543e46851',
-        width: width ? String(width) : '728',
-        height: height ? String(height) : '90',
+        width: width.toString(),
+        height: height.toString(),
       };
       window.coinzilla_display.push(cDisplayPreferences);
     }
-  }, [ height, isInBrowser, width ]);
+  }, [ isInBrowser, width, height ]);
 
   return (
     <Flex
       className={ className }
-      id={ 'adBanner' + (platform ? `_${ platform }` : '') }
-      h={ height ? `${ height }px` : { base: '100px', lg: '90px' } }
+      id={ 'adBanner' + (format ? `_${ format }` : '') }
+      h={ height ? `${ height }px` : { base: `${ MOBILE_BANNER_HEIGHT }px`, lg: `${ DESKTOP_BANNER_HEIGHT }px` } }
       w={ width ? `${ width }px` : undefined }
     >
       <Script strategy="lazyOnload" src="https://coinzillatag.com/lib/display.js"/>

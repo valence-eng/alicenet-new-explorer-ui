@@ -1,17 +1,14 @@
-import { Skeleton } from '@chakra-ui/react';
-import BigNumber from 'bignumber.js';
 import React from 'react';
 
 import type { TokenInfo } from 'types/api/token';
 
 import config from 'configs/app';
-import { WEI, WEI_IN_GWEI } from 'lib/consts';
-import { currencyUnits } from 'lib/units';
-import * as DetailsInfoItem from 'ui/shared/DetailsInfoItem';
-import TokenEntity from 'ui/shared/entities/token/TokenEntity';
+import * as DetailedInfo from 'ui/shared/DetailedInfo/DetailedInfo';
+import GasPriceValue from 'ui/shared/value/GasPriceValue';
+import TokenValue from 'ui/shared/value/TokenValue';
 
 interface Props {
-  gasToken?: TokenInfo<'ERC-20'> | null;
+  gasToken?: TokenInfo | null;
   gasPrice: string | null;
   isLoading?: boolean;
 }
@@ -24,36 +21,34 @@ const TxDetailsGasPrice = ({ gasPrice, gasToken, isLoading }: Props) => {
   const content = (() => {
     if (gasToken) {
       return (
-        <Skeleton isLoaded={ !isLoading } display="flex">
-          <span>{ BigNumber(gasPrice).dividedBy(WEI).toFixed() }</span>
-          <TokenEntity token={ gasToken } noCopy onlySymbol w="auto" ml={ 1 }/>
-        </Skeleton>
+        <TokenValue
+          amount={ gasPrice }
+          token={ gasToken }
+          loading={ isLoading }
+          accuracy={ 0 }
+        />
       );
     }
 
     return (
-      <>
-        <Skeleton isLoaded={ !isLoading } mr={ 1 }>
-          { BigNumber(gasPrice).dividedBy(WEI).toFixed() } { currencyUnits.ether }
-        </Skeleton>
-        <Skeleton isLoaded={ !isLoading } color="text_secondary">
-          <span>({ BigNumber(gasPrice).dividedBy(WEI_IN_GWEI).toFixed() } { currencyUnits.gwei })</span>
-        </Skeleton>
-      </>
+      <GasPriceValue
+        amount={ gasPrice }
+        loading={ isLoading }
+      />
     );
   })();
 
   return (
     <>
-      <DetailsInfoItem.Label
+      <DetailedInfo.ItemLabel
         hint="Price per unit of gas specified by the sender. Higher gas prices can prioritize transaction inclusion during times of high usage"
         isLoading={ isLoading }
       >
         Gas price
-      </DetailsInfoItem.Label>
-      <DetailsInfoItem.Value>
+      </DetailedInfo.ItemLabel>
+      <DetailedInfo.ItemValue multiRow>
         { content }
-      </DetailsInfoItem.Value>
+      </DetailedInfo.ItemValue>
     </>
   );
 };

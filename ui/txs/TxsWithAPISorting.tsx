@@ -1,5 +1,6 @@
 import React from 'react';
 
+import type { TxsSocketType } from './socket/types';
 import type { AddressFromToFilter } from 'types/api/address';
 import type { TransactionsSortingValue } from 'types/api/transaction';
 
@@ -9,37 +10,35 @@ import getSortParamsFromValue from 'ui/shared/sort/getSortParamsFromValue';
 import TxsContent from './TxsContent';
 
 type Props = {
-  // eslint-disable-next-line max-len
-  query: QueryWithPagesResult<'address_txs'>;
+
+  query: QueryWithPagesResult<'general:address_txs'>;
   showBlockInfo?: boolean;
-  showSocketInfo?: boolean;
-  socketInfoAlert?: string;
-  socketInfoNum?: number;
+  socketType?: TxsSocketType;
   currentAddress?: string;
   filter?: React.ReactNode;
   filterValue?: AddressFromToFilter;
   enableTimeIncrement?: boolean;
   top?: number;
-  sorting: TransactionsSortingValue | undefined;
-  setSort: (value?: TransactionsSortingValue) => void;
-}
+  sorting: TransactionsSortingValue;
+  setSort: (value: TransactionsSortingValue) => void;
+  showTableViewButton?: boolean;
+};
 
 const TxsWithAPISorting = ({
   filter,
   filterValue,
   query,
   showBlockInfo = true,
-  showSocketInfo = true,
-  socketInfoAlert,
-  socketInfoNum,
+  socketType,
   currentAddress,
   enableTimeIncrement,
   top,
   sorting,
   setSort,
+  showTableViewButton,
 }: Props) => {
 
-  const handleSortChange = React.useCallback((value?: TransactionsSortingValue) => {
+  const handleSortChange = React.useCallback((value: TransactionsSortingValue) => {
     setSort(value);
     query.onSortingChange(getSortParamsFromValue(value));
   }, [ setSort, query ]);
@@ -49,9 +48,7 @@ const TxsWithAPISorting = ({
       filter={ filter }
       filterValue={ filterValue }
       showBlockInfo={ showBlockInfo }
-      showSocketInfo={ showSocketInfo }
-      socketInfoAlert={ socketInfoAlert }
-      socketInfoNum={ socketInfoNum }
+      socketType={ socketType }
       currentAddress={ currentAddress }
       enableTimeIncrement={ enableTimeIncrement }
       top={ top }
@@ -60,7 +57,8 @@ const TxsWithAPISorting = ({
       isError={ query.isError }
       setSorting={ handleSortChange }
       sort={ sorting }
-      query={ query }
+      pagination={ query.pagination }
+      showTableViewButton={ showTableViewButton }
     />
   );
 };
