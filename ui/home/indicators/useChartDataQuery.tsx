@@ -7,8 +7,10 @@ import useApiQuery from 'lib/api/useApiQuery';
 import { getChartData } from './utils/chart';
 
 const rollupFeature = config.features.rollup;
-const isOptimisticRollup = rollupFeature.isEnabled && rollupFeature.type === 'optimistic';
-const isArbitrumRollup = rollupFeature.isEnabled && rollupFeature.type === 'arbitrum';
+const isOptimisticRollup =
+  rollupFeature.isEnabled && rollupFeature.type === 'optimistic';
+const isArbitrumRollup =
+  rollupFeature.isEnabled && rollupFeature.type === 'arbitrum';
 
 const isStatsFeatureEnabled = config.features.stats.isEnabled;
 
@@ -18,12 +20,18 @@ export type UseFetchChartDataResult = {
   data: TimeChartData;
 };
 
-export default function useChartDataQuery(indicatorId: ChainIndicatorId): UseFetchChartDataResult {
+export default function useChartDataQuery(
+  indicatorId: ChainIndicatorId,
+): UseFetchChartDataResult {
   const statsDailyTxsQuery = useApiQuery('stats:pages_main', {
     queryOptions: {
       refetchOnMount: false,
       enabled: isStatsFeatureEnabled && indicatorId === 'daily_txs',
-      select: (data) => data.daily_new_transactions?.chart.map((item) => ({ date: new Date(item.date), value: Number(item.value) })) || [],
+      select: (data) =>
+        data.daily_new_transactions?.chart.map((item) => ({
+          date: new Date(item.date),
+          value: Number(item.value),
+        })) || [],
     },
   });
 
@@ -33,9 +41,21 @@ export default function useChartDataQuery(indicatorId: ChainIndicatorId): UseFet
       enabled: isStatsFeatureEnabled && indicatorId === 'daily_operational_txs',
       select: (data) => {
         if (isArbitrumRollup) {
-          return data.daily_new_operational_transactions?.chart.map((item) => ({ date: new Date(item.date), value: Number(item.value) })) || [];
+          return (
+            data.daily_new_operational_transactions?.chart.map((item) => ({
+              date: new Date(item.date),
+              value: Number(item.value),
+            })) || []
+          );
         } else if (isOptimisticRollup) {
-          return data.op_stack_daily_new_operational_transactions?.chart.map((item) => ({ date: new Date(item.date), value: Number(item.value) })) || [];
+          return (
+            data.op_stack_daily_new_operational_transactions?.chart.map(
+              (item) => ({
+                date: new Date(item.date),
+                value: Number(item.value),
+              }),
+            ) || []
+          );
         }
         return [];
       },
@@ -46,7 +66,15 @@ export default function useChartDataQuery(indicatorId: ChainIndicatorId): UseFet
     queryOptions: {
       refetchOnMount: false,
       enabled: !isStatsFeatureEnabled && indicatorId === 'daily_txs',
-      select: (data) => data.chart_data.map((item) => ({ date: new Date(item.date), value: item.transactions_count })),
+      select: (data) =>
+        data.chart_data.map((item) => ({
+          date: new Date(item.date),
+          value:
+            item.transaction_count ??
+            item.transactions_count ??
+            item.tx_count ??
+            null,
+        })),
     },
   });
 
@@ -54,24 +82,35 @@ export default function useChartDataQuery(indicatorId: ChainIndicatorId): UseFet
     queryOptions: {
       refetchOnMount: false,
       enabled: indicatorId === 'coin_price',
-      select: (data) => data.chart_data.map((item) => ({ date: new Date(item.date), value: item.closing_price })),
+      select: (data) =>
+        data.chart_data.map((item) => ({
+          date: new Date(item.date),
+          value: item.closing_price,
+        })),
     },
   });
 
-  const secondaryCoinPriceQuery = useApiQuery('general:stats_charts_secondary_coin_price', {
-    queryOptions: {
-      refetchOnMount: false,
-      enabled: indicatorId === 'secondary_coin_price',
-      select: (data) => data.chart_data.map((item) => ({ date: new Date(item.date), value: item.closing_price })),
+  const secondaryCoinPriceQuery = useApiQuery(
+    'general:stats_charts_secondary_coin_price',
+    {
+      queryOptions: {
+        refetchOnMount: false,
+        enabled: indicatorId === 'secondary_coin_price',
+        select: (data) =>
+          data.chart_data.map((item) => ({
+            date: new Date(item.date),
+            value: item.closing_price,
+          })),
+      },
     },
-  });
+  );
 
   const marketCapQuery = useApiQuery('general:stats_charts_market', {
     queryOptions: {
       refetchOnMount: false,
       enabled: indicatorId === 'market_cap',
-      select: (data) => data.chart_data.map((item) => (
-        {
+      select: (data) =>
+        data.chart_data.map((item) => ({
           date: new Date(item.date),
           value: (() => {
             if (item.market_cap !== undefined) {
@@ -92,8 +131,8 @@ export default function useChartDataQuery(indicatorId: ChainIndicatorId): UseFet
     queryOptions: {
       refetchOnMount: false,
       enabled: indicatorId === 'tvl',
-      select: (data) => data.chart_data.map((item) => (
-        {
+      select: (data) =>
+        data.chart_data.map((item) => ({
           date: new Date(item.date),
           value: item.tvl !== undefined ? item.tvl : 0,
         })),
@@ -102,7 +141,9 @@ export default function useChartDataQuery(indicatorId: ChainIndicatorId): UseFet
 
   switch (indicatorId) {
     case 'daily_txs': {
-      const query = isStatsFeatureEnabled ? statsDailyTxsQuery : apiDailyTxsQuery;
+      const query = isStatsFeatureEnabled
+        ? statsDailyTxsQuery
+        : apiDailyTxsQuery;
       return {
         data: getChartData(indicatorId, query.data || []),
         isError: query.isError,
@@ -111,7 +152,10 @@ export default function useChartDataQuery(indicatorId: ChainIndicatorId): UseFet
     }
     case 'daily_operational_txs': {
       return {
-        data: getChartData(indicatorId, statsDailyOperationalTxsQuery.data || []),
+        data: getChartData(
+          indicatorId,
+          statsDailyOperationalTxsQuery.data || [],
+        ),
         isError: statsDailyOperationalTxsQuery.isError,
         isPending: statsDailyOperationalTxsQuery.isPending,
       };

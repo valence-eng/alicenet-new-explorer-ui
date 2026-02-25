@@ -16,7 +16,10 @@ import type { FontFace } from 'use-font-face-observer';
 import useFontFaceObserver from 'use-font-face-observer';
 
 import { Tooltip } from 'toolkit/chakra/tooltip';
-import { BODY_TYPEFACE, HEADING_TYPEFACE } from 'toolkit/theme/foundations/typography';
+import {
+  BODY_TYPEFACE,
+  HEADING_TYPEFACE,
+} from 'toolkit/theme/foundations/typography';
 
 const TAIL_LENGTH = 4;
 const HEAD_MIN_LENGTH = 4;
@@ -30,13 +33,24 @@ interface Props extends BoxProps {
   as?: React.ElementType;
 }
 
-const HashStringShortenDynamic = ({ hash, fontWeight = '400', noTooltip, tailLength = TAIL_LENGTH, as = 'span', tooltipInteractive, ...props }: Props) => {
+const HashStringShortenDynamic = ({
+  hash,
+  fontWeight = '400',
+  noTooltip,
+  tailLength = TAIL_LENGTH,
+  as = 'span',
+  tooltipInteractive,
+  ...props
+}: Props) => {
   const elementRef = useRef<HTMLSpanElement>(null);
-  const [ displayedString, setDisplayedString ] = React.useState(hash);
+  const [displayedString, setDisplayedString] = React.useState(hash || '');
 
   const isFontFaceLoaded = useFontFaceObserver([
     { family: BODY_TYPEFACE, weight: String(fontWeight) as FontFace['weight'] },
-    { family: HEADING_TYPEFACE, weight: String(fontWeight) as FontFace['weight'] },
+    {
+      family: HEADING_TYPEFACE,
+      weight: String(fontWeight) as FontFace['weight'],
+    },
   ]);
 
   const calculateString = useCallback(() => {
@@ -58,7 +72,10 @@ const HashStringShortenDynamic = ({ hash, fontWeight = '400', noTooltip, tailLen
       let rightI = hash.length - tailLength;
 
       while (rightI - leftI > 1) {
-        const medI = ((rightI - leftI) % 2) ? leftI + (rightI - leftI + 1) / 2 : leftI + (rightI - leftI) / 2;
+        const medI =
+          (rightI - leftI) % 2
+            ? leftI + (rightI - leftI + 1) / 2
+            : leftI + (rightI - leftI) / 2;
         const res = hash.slice(0, medI) + '...' + tail;
         shadowEl.textContent = res;
         if (getWidth(shadowEl) < parentWidth) {
@@ -73,14 +90,14 @@ const HashStringShortenDynamic = ({ hash, fontWeight = '400', noTooltip, tailLen
     }
 
     parent.removeChild(shadowEl);
-  }, [ hash, tailLength ]);
+  }, [hash, tailLength]);
 
   // we want to do recalculation when isFontFaceLoaded flag is changed
   // but we don't want to create more resize event listeners
   // that's why there are separate useEffect hooks
   useEffect(() => {
     calculateString();
-  }, [ calculateString, isFontFaceLoaded ]);
+  }, [calculateString, isFontFaceLoaded]);
 
   useEffect(() => {
     const resizeHandler = debounce(calculateString, 100);
@@ -90,19 +107,23 @@ const HashStringShortenDynamic = ({ hash, fontWeight = '400', noTooltip, tailLen
     return function cleanup() {
       resizeObserver.unobserve(document.body);
     };
-  }, [ calculateString ]);
+  }, [calculateString]);
 
-  const content = <chakra.span ref={ elementRef } as={ as } { ...props }>{ displayedString }</chakra.span>;
-  const isTruncated = hash.length !== displayedString.length;
+  const content = (
+    <chakra.span ref={elementRef} as={as} {...props}>
+      {displayedString}
+    </chakra.span>
+  );
+  const isTruncated = (hash || '').length !== displayedString.length;
 
   if (isTruncated && !noTooltip) {
     return (
       <Tooltip
-        content={ hash }
+        content={hash}
         contentProps={{ maxW: { base: 'calc(100vw - 8px)', lg: '400px' } }}
-        interactive={ tooltipInteractive }
+        interactive={tooltipInteractive}
       >
-        { content }
+        {content}
       </Tooltip>
     );
   }
