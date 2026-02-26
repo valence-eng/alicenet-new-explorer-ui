@@ -43,7 +43,7 @@ jobs:
         with:
           path: |
             node_modules
-          key: node_modules-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          key: node_modules-v2-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
   
       - name: Install dependencies
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
@@ -79,7 +79,7 @@ jobs:
         with:
           path: |
             node_modules
-          key: node_modules-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          key: node_modules-v2-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
       
       - name: Install project dependencies
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
@@ -142,7 +142,7 @@ jobs:
         with:
           path: |
             node_modules
-          key: node_modules-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          key: node_modules-v2-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
     
       - name: Install dependencies
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
@@ -185,7 +185,7 @@ jobs:
         with:
           path: |
             node_modules
-          key: node_modules-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          key: node_modules-v2-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
     
       - name: Install dependencies
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
