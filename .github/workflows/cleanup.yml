@@ -1,10 +1,6 @@
 name: Cleanup environments
 
 on:
-  pull_request:
-    types:
-      - closed
-      - merged
   workflow_dispatch:
 
 permissions:
