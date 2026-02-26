@@ -141,9 +141,9 @@ export default function useChartDataQuery(
 
   switch (indicatorId) {
     case 'daily_txs': {
-      const query = isStatsFeatureEnabled
-        ? statsDailyTxsQuery
-        : apiDailyTxsQuery;
+      const query = isStatsFeatureEnabled ?
+        statsDailyTxsQuery :
+        apiDailyTxsQuery;
       return {
         data: getChartData(indicatorId, query.data || []),
         isError: query.isError,

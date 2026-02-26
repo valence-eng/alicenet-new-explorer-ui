@@ -38,14 +38,14 @@ export default function useNavItems(): ReturnType {
     let blockchainNavItems: Array<NavItem> | Array<Array<NavItem>> = [];
 
     const topAccounts: NavItem | null = !config.UI.views.address.hiddenViews
-      ?.top_accounts
-      ? {
-          text: 'Top accounts',
-          nextRoute: { pathname: '/accounts' as const },
-          icon: 'navigation/top_accounts',
-          isActive: pathname === '/accounts',
-        }
-      : null;
+      ?.top_accounts ?
+      {
+        text: 'Top accounts',
+        nextRoute: { pathname: '/accounts' as const },
+        icon: 'navigation/top_accounts',
+        isActive: pathname === '/accounts',
+      } :
+      null;
     const blocks: NavItem | null = {
       text: 'Blocks',
       nextRoute: { pathname: '/blocks' as const },
@@ -68,42 +68,42 @@ export default function useNavItems(): ReturnType {
         pathname === '/tx/[hash]' ||
         pathname === '/chain/[chain_slug]/tx/[hash]',
     };
-    const cctxs: NavItem | null = config.features.zetachain.isEnabled
-      ? {
-          text: 'Cross-chain transactions',
-          nextRoute: { pathname: '/txs' as const, query: { tab: 'cctx' } },
-          icon: 'navigation/cross_chain_txs',
-          isActive:
+    const cctxs: NavItem | null = config.features.zetachain.isEnabled ?
+      {
+        text: 'Cross-chain transactions',
+        nextRoute: { pathname: '/txs' as const, query: { tab: 'cctx' } },
+        icon: 'navigation/cross_chain_txs',
+        isActive:
             pathname === '/cc/tx/[hash]' ||
             (pathname === '/txs' && tab?.includes('cctx')),
-        }
-      : null;
-    const operations: NavItem | null = config.features.tac.isEnabled
-      ? {
-          text: 'Operations',
-          nextRoute: { pathname: '/operations' as const },
-          icon: 'navigation/operation',
-          isActive:
+      } :
+      null;
+    const operations: NavItem | null = config.features.tac.isEnabled ?
+      {
+        text: 'Operations',
+        nextRoute: { pathname: '/operations' as const },
+        icon: 'navigation/operation',
+        isActive:
             pathname === '/operations' || pathname === '/operation/[id]',
-        }
-      : null;
+      } :
+      null;
     const internalTxs: NavItem | null = {
       text: 'Internal transactions',
       nextRoute: { pathname: '/internal-txs' as const },
       icon: 'navigation/internal_txns',
       isActive: pathname === '/internal-txs',
     };
-    const userOps: NavItem | null = config.features.userOps.isEnabled
-      ? {
-          text: 'User operations',
-          nextRoute: { pathname: '/ops' as const },
-          icon: 'navigation/user_op',
-          isActive:
+    const userOps: NavItem | null = config.features.userOps.isEnabled ?
+      {
+        text: 'User operations',
+        nextRoute: { pathname: '/ops' as const },
+        icon: 'navigation/user_op',
+        isActive:
             pathname === '/ops' ||
             pathname === '/op/[hash]' ||
             pathname === '/chain/[chain_slug]/op/[hash]',
-        }
-      : null;
+      } :
+      null;
 
     const verifiedContracts: NavItem | null = {
       text: 'Verified contracts',
@@ -111,31 +111,31 @@ export default function useNavItems(): ReturnType {
       icon: 'navigation/verified_contracts',
       isActive: pathname === '/verified-contracts',
     };
-    const nameLookup = config.features.nameServices.isEnabled
-      ? {
-          text: 'Name services lookup',
-          nextRoute: { pathname: '/name-services' as const },
-          icon: 'navigation/name_services',
-          isActive: pathname.startsWith('/name-services'),
-        }
-      : null;
-    const validators = config.features.validators.isEnabled
-      ? {
-          text: 'Validators',
-          nextRoute: { pathname: '/validators' as const },
-          icon: 'navigation/validator',
-          isActive:
+    const nameLookup = config.features.nameServices.isEnabled ?
+      {
+        text: 'Name services lookup',
+        nextRoute: { pathname: '/name-services' as const },
+        icon: 'navigation/name_services',
+        isActive: pathname.startsWith('/name-services'),
+      } :
+      null;
+    const validators = config.features.validators.isEnabled ?
+      {
+        text: 'Validators',
+        nextRoute: { pathname: '/validators' as const },
+        icon: 'navigation/validator',
+        isActive:
             pathname === '/validators' || pathname === '/validators/[id]',
-        }
-      : null;
+      } :
+      null;
     const rollupDeposits = {
-      text: `Deposits (L1${rightLineArrow}L2)`,
+      text: `Deposits (L1${ rightLineArrow }L2)`,
       nextRoute: { pathname: '/deposits' as const },
       icon: 'navigation/deposits',
       isActive: pathname === '/deposits',
     };
     const rollupWithdrawals = {
-      text: `Withdrawals (L2${rightLineArrow}L1)`,
+      text: `Withdrawals (L2${ rightLineArrow }L1)`,
       nextRoute: { pathname: '/withdrawals' as const },
       icon: 'navigation/withdrawals',
       isActive: pathname === '/withdrawals',
@@ -152,42 +152,42 @@ export default function useNavItems(): ReturnType {
       icon: 'navigation/output_roots',
       isActive: pathname === '/output-roots',
     };
-    const rollupDisputeGames = config.features.faultProofSystem.isEnabled
-      ? {
-          text: 'Dispute games',
-          nextRoute: { pathname: '/dispute-games' as const },
-          icon: 'navigation/games',
-          isActive: pathname === '/dispute-games',
-        }
-      : null;
-    const mudWorlds = config.features.mudFramework.isEnabled
-      ? {
-          text: 'MUD worlds',
-          nextRoute: { pathname: '/mud-worlds' as const },
-          icon: 'navigation/mud',
-          isActive: pathname === '/mud-worlds',
-        }
-      : null;
-    const epochs = config.features.celo.isEnabled
-      ? {
-          text: 'Epochs',
-          nextRoute: { pathname: '/epochs' as const },
-          icon: 'navigation/hourglass',
-          isActive: pathname.startsWith('/epochs'),
-        }
-      : null;
+    const rollupDisputeGames = config.features.faultProofSystem.isEnabled ?
+      {
+        text: 'Dispute games',
+        nextRoute: { pathname: '/dispute-games' as const },
+        icon: 'navigation/games',
+        isActive: pathname === '/dispute-games',
+      } :
+      null;
+    const mudWorlds = config.features.mudFramework.isEnabled ?
+      {
+        text: 'MUD worlds',
+        nextRoute: { pathname: '/mud-worlds' as const },
+        icon: 'navigation/mud',
+        isActive: pathname === '/mud-worlds',
+      } :
+      null;
+    const epochs = config.features.celo.isEnabled ?
+      {
+        text: 'Epochs',
+        nextRoute: { pathname: '/epochs' as const },
+        icon: 'navigation/hourglass',
+        isActive: pathname.startsWith('/epochs'),
+      } :
+      null;
 
     const rollupFeature = config.features.rollup;
 
     const rollupInteropMessages =
-      rollupFeature.isEnabled && rollupFeature.interopEnabled
-        ? {
-            text: 'Interop messages',
-            nextRoute: { pathname: '/interop-messages' as const },
-            icon: 'navigation/cross_chain_txs',
-            isActive: pathname === '/interop-messages',
-          }
-        : null;
+      rollupFeature.isEnabled && rollupFeature.interopEnabled ?
+        {
+          text: 'Interop messages',
+          nextRoute: { pathname: '/interop-messages' as const },
+          icon: 'navigation/cross_chain_txs',
+          isActive: pathname === '/interop-messages',
+        } :
+        null;
 
     if (
       rollupFeature.isEnabled &&
@@ -223,15 +223,15 @@ export default function useNavItems(): ReturnType {
       ];
     } else if (rollupFeature.isEnabled && rollupFeature.type === 'shibarium') {
       blockchainNavItems = [
-        [txs, internalTxs, rollupDeposits, rollupWithdrawals],
-        [blocks, userOps, topAccounts, verifiedContracts, nameLookup].filter(
+        [ txs, internalTxs, rollupDeposits, rollupWithdrawals ],
+        [ blocks, userOps, topAccounts, verifiedContracts, nameLookup ].filter(
           Boolean,
         ),
       ];
     } else if (rollupFeature.isEnabled && rollupFeature.type === 'zkSync') {
       blockchainNavItems = [
-        [txs, internalTxs, userOps, blocks, rollupTxnBatches].filter(Boolean),
-        [topAccounts, validators, verifiedContracts, nameLookup].filter(
+        [ txs, internalTxs, userOps, blocks, rollupTxnBatches ].filter(Boolean),
+        [ topAccounts, validators, verifiedContracts, nameLookup ].filter(
           Boolean,
         ),
       ];
@@ -250,11 +250,11 @@ export default function useNavItems(): ReturnType {
         nameLookup,
         beaconChainFeature.isEnabled &&
           !beaconChainFeature.withdrawalsOnly && {
-            text: 'Deposits',
-            nextRoute: { pathname: '/deposits' as const },
-            icon: 'navigation/deposits',
-            isActive: pathname === '/deposits',
-          },
+          text: 'Deposits',
+          nextRoute: { pathname: '/deposits' as const },
+          icon: 'navigation/deposits',
+          isActive: pathname === '/deposits',
+        },
         config.features.beaconChain.isEnabled && {
           text: 'Withdrawals',
           nextRoute: { pathname: '/withdrawals' as const },
@@ -265,16 +265,16 @@ export default function useNavItems(): ReturnType {
     }
 
     const otherNavItems: Array<NavItem> | Array<Array<NavItem>> = [
-      config.features.opSuperchain.isEnabled
-        ? {
-            text: 'Verify contract',
-            url: 'https://vera.blockscout.com',
-          }
-        : {
-            text: 'Verify contract',
-            nextRoute: { pathname: '/contract-verification' as const },
-            isActive: pathname.startsWith('/contract-verification'),
-          },
+      config.features.opSuperchain.isEnabled ?
+        {
+          text: 'Verify contract',
+          url: 'https://vera.blockscout.com',
+        } :
+        {
+          text: 'Verify contract',
+          nextRoute: { pathname: '/contract-verification' as const },
+          isActive: pathname.startsWith('/contract-verification'),
+        },
       config.features.publicTagsSubmission.isEnabled && {
         text: 'Submit public tag',
         nextRoute: { pathname: '/public-tags/submit' as const },
@@ -282,10 +282,10 @@ export default function useNavItems(): ReturnType {
       },
       rollupFeature.isEnabled &&
         rollupFeature.type === 'arbitrum' && {
-          text: 'Txn withdrawals',
-          nextRoute: { pathname: '/txn-withdrawals' as const },
-          isActive: pathname.startsWith('/txn-withdrawals'),
-        },
+        text: 'Txn withdrawals',
+        nextRoute: { pathname: '/txn-withdrawals' as const },
+        isActive: pathname.startsWith('/txn-withdrawals'),
+      },
       ...config.UI.navigation.otherLinks,
     ].filter(Boolean);
 
@@ -298,16 +298,16 @@ export default function useNavItems(): ReturnType {
           .some((item) => isInternalItem(item) && item.isActive),
         subItems: blockchainNavItems,
       },
-      marketplaceFeature.isEnabled
-        ? {
-            text: marketplaceFeature.titles.menu_item,
-            nextRoute: { pathname: '/apps' as const },
-            icon: 'navigation/apps',
-            isActive:
+      marketplaceFeature.isEnabled ?
+        {
+          text: marketplaceFeature.titles.menu_item,
+          nextRoute: { pathname: '/apps' as const },
+          icon: 'navigation/apps',
+          isActive:
               pathname.startsWith('/app') ||
               pathname.startsWith('/essential-dapps'),
-          }
-        : null,
+        } :
+        null,
       {
         text: 'Other',
         icon: 'navigation/other',
@@ -352,5 +352,5 @@ export default function useNavItems(): ReturnType {
     ].filter(Boolean);
 
     return { mainNavItems, accountNavItems };
-  }, [pathname, tab]);
+  }, [ pathname, tab ]);
 }
