@@ -14,5 +14,8 @@
     "dotenv-cli": "^7.2.1",
     "typescript": "5.4.2",
     "vite": "6.4.1"
+  },
+  "resolutions": {
+    "rollup": "4.59.0"
   }
 }

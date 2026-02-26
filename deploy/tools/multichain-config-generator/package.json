@@ -13,5 +13,8 @@
     "typescript": "5.4.2",
     "vite": "6.4.1",
     "@types/node": "22.12.0"
+  },
+  "resolutions": {
+    "rollup": "4.59.0"
   }
 } 
