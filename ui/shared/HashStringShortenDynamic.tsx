@@ -109,12 +109,16 @@ const HashStringShortenDynamic = ({
     };
   }, [ calculateString ]);
 
+  if (!hash) {
+    return <chakra.span ref={ elementRef } as={ as } { ...props }/>;
+  }
+
   const content = (
     <chakra.span ref={ elementRef } as={ as } { ...props }>
       { displayedString }
     </chakra.span>
   );
-  const isTruncated = (hash || '').length !== displayedString.length;
+  const isTruncated = hash.length !== displayedString.length;
 
   if (isTruncated && !noTooltip) {
     return (
