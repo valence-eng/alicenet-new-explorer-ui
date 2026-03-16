@@ -5,9 +5,9 @@ import fetchFactory from 'nextjs/utils/fetchProxy';
 
 import appConfig from 'configs/app';
 import isNeedProxy from 'lib/api/isNeedProxy';
+import { normalizeAddressFields } from 'lib/api/normalizeAddressFields';
 
 const handler = async(nextReq: NextApiRequest, nextRes: NextApiResponse) => {
-
   if (!isNeedProxy()) {
     nextRes.status(404).json({ error: 'Not found' });
     return;
@@ -20,7 +20,8 @@ const handler = async(nextReq: NextApiRequest, nextRes: NextApiResponse) => {
 
   const url = new URL(
     nextReq.url.replace(/^\/node-api\/proxy/, ''),
-    nextReq.headers['x-endpoint']?.toString() || appConfig.apis.general?.endpoint,
+    nextReq.headers['x-endpoint']?.toString() ||
+      appConfig.apis.general?.endpoint,
   );
   const apiRes = await fetchFactory(nextReq)(
     url.toString(),
@@ -48,7 +49,20 @@ const handler = async(nextReq: NextApiRequest, nextRes: NextApiResponse) => {
     nextRes.appendHeader('set-cookie', value);
   });
 
-  nextRes.status(apiRes.status).send(apiRes.body);
+  const contentType = apiRes.headers.get('content-type') || '';
+  if (contentType.includes('application/json')) {
+    try {
+      const json = await apiRes.json();
+
+      const normalized = normalizeAddressFields(json);
+
+      nextRes.status(apiRes.status).json(normalized);
+    } catch {
+      nextRes.status(apiRes.status).send(apiRes.body);
+    }
+  } else {
+    nextRes.status(apiRes.status).send(apiRes.body);
+  }
 };
 
 export default handler;

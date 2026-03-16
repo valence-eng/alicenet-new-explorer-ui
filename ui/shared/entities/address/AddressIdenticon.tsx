@@ -14,24 +14,22 @@ interface IconProps {
 
 const Icon = dynamic(
   async() => {
-    const type = cookies.get(cookies.NAMES.ADDRESS_IDENTICON_TYPE) || config.UI.views.address.identiconType;
+    const type =
+      cookies.get(cookies.NAMES.ADDRESS_IDENTICON_TYPE) ||
+      config.UI.views.address.identiconType;
     switch (type) {
       case 'github': {
-
-        return (props: IconProps) => <IdenticonGithub iconSize={ props.size } seed={ props.hash }/>;
+        return (props: IconProps) => (
+          <IdenticonGithub iconSize={ props.size } seed={ props.hash }/>
+        );
       }
 
       case 'blockie': {
-        const { blo } = (await import('blo'));
+        const { blo } = await import('blo');
 
         return (props: IconProps) => {
           const data = blo(props.hash as `0x${ string }`, props.size);
-          return (
-            <Image
-              src={ data }
-              alt={ `Identicon for ${ props.hash }}` }
-            />
-          );
+          return <Image src={ data } alt={ `Identicon for ${ props.hash }}` }/>;
         };
       }
 
@@ -53,7 +51,9 @@ const Icon = dynamic(
 
         return (props: IconProps) => {
           const svg = GradientAvatar(props.hash, props.size, 'circle');
-          return <Box display="flex" dangerouslySetInnerHTML={{ __html: svg }}/>;
+          return (
+            <Box display="flex" dangerouslySetInnerHTML={{ __html: svg }}/>
+          );
         };
       }
 
@@ -69,13 +69,19 @@ const Icon = dynamic(
         return () => null;
       }
     }
-  }, {
+  },
+  {
     ssr: false,
-  });
+  },
+);
 
 type Props = IconProps;
 
 const AddressIdenticon = ({ size, hash }: Props) => {
+  if (!hash) {
+    return <Box boxSize={ `${ size }px` } borderRadius="full" overflow="hidden"/>;
+  }
+
   return (
     <Box boxSize={ `${ size }px` } borderRadius="full" overflow="hidden">
       <Icon size={ size } hash={ hash }/>
