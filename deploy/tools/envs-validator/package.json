@@ -16,6 +16,7 @@
     "vite": "6.4.2"
   },
   "resolutions": {
-    "rollup": "4.59.0"
+    "rollup": "4.59.0",
+    "postcss": ">=8.5.14"
   }
 }
