@@ -195,7 +195,6 @@
   "resolutions": {
     "@types/react": "18.3.12",
     "@types/react-dom": "18.3.1",
-    "wagmi/**/ws": "8.17.1",
     "@helia/verified-fetch/**/axios": "1.16.0",
     "@helia/verified-fetch/**/tar-fs": "2.1.4",
     "@helia/verified-fetch/**/node-forge": "1.4.0",
@@ -203,7 +202,6 @@
     "@reown/appkit/**/node-forge": "1.4.0",
     "@reown/appkit-adapter-wagmi/**/node-forge": "1.4.0",
     "swagger-ui-react/**/js-yaml": "4.1.1",
-    "dappscout-iframe/**/ws": "8.17.1",
     "rollup": "4.59.0",
     "axios": "1.16.0",
     "**/posthog-js/preact": "10.27.3",
@@ -215,7 +213,10 @@
     "postcss": ">=8.5.14",
     "picomatch": ">=4.0.2",
     "vite": "7.3.2",
-    "@babel/plugin-transform-modules-systemjs": "^7.29.7"
+    "@babel/plugin-transform-modules-systemjs": "^7.29.7",
+    "ws": "^8.20.1",
+    "@libp2p/kad-dht": "^16.2.6",
+    "uuid": "^11.1.1"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
