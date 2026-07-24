@@ -3,17 +3,12 @@ on:
   workflow_call:
   workflow_dispatch:
   pull_request:
-    types: [ opened, synchronize, unlabeled ]
-    paths-ignore:
-      - '.github/ISSUE_TEMPLATE/**'
-      - '.husky/**'
-      - '.vscode/**'
-      - 'deploy/**'
-      - 'docs/**'
-      - 'public/**'
-      - 'stub/**'
-      - 'tools/**'
-      
+    types: [ opened, synchronize, reopened, labeled, unlabeled ]
+    # NOTE: intentionally NO paths-ignore here. The workflow must trigger on
+    # every PR so the required "Checks passed" gate job always reports a status
+    # (SOC compliance). Path-based skipping is handled inside the `changes` job
+    # below, which only skips the *heavy* jobs — the gate still runs and passes.
+
 # concurrency:
 #   group: ${{ github.workflow }}__${{ github.job }}__${{ github.ref }}
 #   cancel-in-progress: true
@@ -23,10 +18,54 @@ permissions:
   pull-requests: write
 
 jobs:
+  changes:
+    name: Detect relevant changes
+    runs-on: ubuntu-latest
+    outputs:
+      relevant: ${{ steps.check.outputs.relevant }}
+    steps:
+      - name: Checkout repo
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine whether checkable paths changed
+        id: check
+        run: |
+          # For non-PR triggers (workflow_call / workflow_dispatch, e.g.
+          # pre-release), always run the full suite.
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "relevant=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          base='${{ github.event.pull_request.base.sha }}'
+          head='${{ github.event.pull_request.head.sha }}'
+          changed="$(git diff --name-only "$base" "$head")"
+          echo "Changed files:"
+          echo "$changed"
+
+          # A PR is "relevant" (needs the heavy checks) if it touches any file
+          # OUTSIDE the ignore list below. Keep this list in sync with the paths
+          # that genuinely don't affect app code / tests.
+          relevant=false
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            case "$f" in
+              .github/ISSUE_TEMPLATE/*|.husky/*|.vscode/*|deploy/*|docs/*|public/*|stub/*|tools/*) ;;
+              *) relevant=true ;;
+            esac
+          done <<< "$changed"
+
+          echo "relevant=$relevant"
+          echo "relevant=$relevant" >> "$GITHUB_OUTPUT"
+
   code_quality:
     name: Code quality
     runs-on: ubuntu-latest
-    if: ${{ !contains(github.event.pull_request.labels.*.name, 'skip checks') && !(github.event.action == 'unlabeled' && github.event.label.name != 'skip checks') }}
+    needs: [ changes ]
+    if: ${{ needs.changes.outputs.relevant == 'true' && !contains(github.event.pull_request.labels.*.name, 'skip checks') && !(github.event.action == 'unlabeled' && github.event.label.name != 'skip checks') }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -62,6 +101,7 @@ jobs:
   toolkit_build_check:
     name: Toolkit build check
     needs: [ code_quality ]
+    if: ${{ needs.code_quality.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -126,6 +166,7 @@ jobs:
     name: ENV variables validation
     runs-on: ubuntu-latest
     needs: [ code_quality ]
+    if: ${{ needs.code_quality.result == 'success' }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -166,6 +207,7 @@ jobs:
   vitest_tests:
     name: Unit tests
     needs: [ code_quality, envs_validation ]
+    if: ${{ needs.code_quality.result == 'success' && needs.envs_validation.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
@@ -197,4 +239,28 @@ jobs:
 
       - name: Run Vitest
         run: yarn test:vitest ${{ github.event_name == 'pull_request' && '--changed=origin/main' || '' }} --passWithNoTests
+
+  # Single always-running gate. Make THIS job the required status check in branch
+  # protection (name: "Checks passed"). It runs on every PR regardless of paths,
+  # so a required status is always reported (SOC compliance). It fails if any
+  # upstream job failed or was cancelled; skipped upstream jobs (irrelevant
+  # paths / skip-checks label) are treated as passing.
+  checks_gate:
+    name: Checks passed
+    if: ${{ always() }}
+    needs: [ changes, code_quality, toolkit_build_check, envs_validation, vitest_tests ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify no upstream job failed
+        run: |
+          results='${{ join(needs.*.result, ',') }}'
+          echo "Upstream job results: $results"
+          IFS=','
+          for r in $results; do
+            if [ "$r" = "failure" ] || [ "$r" = "cancelled" ]; then
+              echo "::error::A required check did not pass (result=$r)."
+              exit 1
+            fi
+          done
+          echo "All checks passed or were legitimately skipped."
 
